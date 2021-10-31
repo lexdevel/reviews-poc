@@ -1,0 +1,106 @@
+version: '3'
+services:
+
+  redis:
+    image: redis
+    restart: always
+
+  mongo:
+    image: mongo
+    restart: always
+    # ports:
+    #   - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: not-so-secret
+
+  # mongo-express:
+  #   image: mongo-express
+  #   ports:
+  #     - 8081:8081
+  #   depends_on:
+  #     - mongo
+  #   restart: always
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: not-so-secret
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:not-so-secret@mongo:27017/
+
+  products:
+    build:
+      context: .
+      dockerfile: ./src/serviceRunner/Dockerfile
+      args:
+        - SERVICE_PATH=src/services/products
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      SERVICE_NAME: Products
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      REDIS_CONNECTION_STRING: redis://redis
+
+  reviews:
+    build:
+      context: .
+      dockerfile: ./src/serviceRunner/Dockerfile
+      args:
+        - SERVICE_PATH=src/services/reviews
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      SERVICE_NAME: Reviews
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      REDIS_CONNECTION_STRING: redis://redis
+
+  stock:
+    build:
+      context: .
+      dockerfile: ./src/serviceRunner/Dockerfile
+      args:
+        - SERVICE_PATH=src/services/stock
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      SERVICE_NAME: Stock
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      REDIS_CONNECTION_STRING: redis://redis
+
+  users:
+    build:
+      context: .
+      dockerfile: ./src/serviceRunner/Dockerfile
+      args:
+        - SERVICE_PATH=src/services/users
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      SERVICE_NAME: Users
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      REDIS_CONNECTION_STRING: redis://redis
+
+  gateway:
+    build:
+      context: ./src/gateway
+      dockerfile: ./Dockerfile
+    ports:
+      - 4000:4000
+    depends_on:
+      products:
+        condition: service_started
+      reviews:
+        condition: service_started
+      stock:
+        condition: service_started
+      users:
+        condition: service_started
+    environment:
+      PORT: 4000
+      PRODUCTS_URL: http://products/graphql
+      REVIEWS_URL: http://reviews/graphql
+      STOCK_URL: http://stock/graphql
+      USERS_URL: http://users/graphql
+

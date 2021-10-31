@@ -1,0 +1,10 @@
+{
+  "name": "gateway",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@apollo/gateway": "latest",
+    "apollo-server": "latest"
+  }
+}

@@ -1,0 +1,24 @@
+type Review @key(fields: "id") {
+  id: ID!
+  commentary: String!
+  author: User!
+  product: Product!
+}
+
+extend type User @key(fields: "id") {
+  id: ID! @external
+  reviews: [Review!]
+}
+
+extend type Product @key(fields: "id") {
+  id: ID! @external
+  reviews: [Review!]
+}
+
+extend type Query {
+  reviews: [Review!]
+}
+
+extend type Mutation {
+  createReview(commentary: String!, userId: ID!, productId: ID!): ID!
+}

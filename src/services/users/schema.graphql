@@ -1,0 +1,13 @@
+type User @key(fields: "id") {
+  id: ID!
+  username: String!
+  fullname: String!
+}
+
+extend type Query {
+  users: [User!]
+}
+
+extend type Mutation {
+  createUser(username: String!, fullname: String!): ID!
+}
