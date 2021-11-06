@@ -1,12 +1,12 @@
 import { ObjectId, MongoClient } from 'mongodb';
-import { RedisClient } from 'redis';
+import { RedisPubsub } from '@lexdevel/redis-pubsub';
 
 /**
  * Build resolvers.
  * @param {MongoClient} mongoClient - Mongo client.
- * @param {RedisClient} redisClient - Redis client.
+ * @param {RedisPubsub} redisPubsub - Redis pubsub.
  */
-export async function buildResolvers(mongoClient, redisClient) {
+export async function buildResolvers(mongoClient, redisPubsub) {
   const db = mongoClient.db();
   const collection = db.collection('reviews');
 

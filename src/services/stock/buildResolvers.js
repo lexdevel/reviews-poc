@@ -1,26 +1,17 @@
 import { ObjectId, MongoClient } from 'mongodb';
-import { RedisClient } from 'redis';
+import { RedisPubsub } from '@lexdevel/redis-pubsub';
 
 /**
  * Build resolvers.
  * @param {MongoClient} mongoClient - Mongo client.
- * @param {RedisClient} redisClient - Redis client.
+ * @param {RedisPubsub} redisPubsub - Redis pubsub.
  */
-export async function buildResolvers(mongoClient, redisClient) {
+export async function buildResolvers(mongoClient, redisPubsub) {
   const db = mongoClient.db();
   const collection = db.collection('stock');
 
-  const mapper = stock => ({
-    id: stock._id,
-    productId: stock.productId,
-    count: stock.count,
-  });
-
-  redisClient.subscribe('product:created');
-  redisClient.on('message', async (channel, message) => {
-    console.log(`Got message on ${channel} -> ${message}`);
-    const product = JSON.parse(message);
-
+  redisPubsub.subscribe('product:created', async product => {
+    console.log(`Product:created message handling...`);
     await collection.insertOne({
       _id: new ObjectId(),
       productId: new ObjectId(product.id),
