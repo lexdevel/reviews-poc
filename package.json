@@ -5,6 +5,7 @@
   "type": "module",
   "dependencies": {
     "@apollo/federation": "latest",
+    "@lexdevel/redis-pubsub": "latest",
     "apollo-server": "latest",
     "mongodb": "latest",
     "redis": "latest"

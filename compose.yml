@@ -1,10 +1,6 @@
 version: '3'
 services:
 
-  redis:
-    image: redis
-    restart: always
-
   mongo:
     image: mongo
     restart: always
@@ -13,6 +9,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: not-so-secret
+
+  redis:
+    image: redis
+    restart: always
 
   # mongo-express:
   #   image: mongo-express
