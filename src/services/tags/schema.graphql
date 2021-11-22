@@ -1,0 +1,12 @@
+type Tag @key(fields: "id") {
+  id: ID!
+  name: String!
+}
+
+extend type Query {
+  tags: [Tag!]
+}
+
+extend type Mutation {
+  createTag(name: String!): ID!
+}

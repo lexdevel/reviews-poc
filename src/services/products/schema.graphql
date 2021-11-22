@@ -2,6 +2,16 @@ type Product @key(fields: "id") {
   id: ID!
   title: String!
   price: Float!
+  category: Category!
+  tags: [Tag!]
+}
+
+extend type Category @key(fields: "id") {
+  id: ID! @external
+}
+
+extend type Tag @key(fields: "id") {
+  id: ID! @external
 }
 
 extend type Query {
@@ -9,5 +19,5 @@ extend type Query {
 }
 
 extend type Mutation {
-  createProduct(title: String!, price: Float!, countInStock: Int!): ID!
+  createProduct(title: String!, price: Float!, categoryId: ID!, tagIds: [ID!], countInStock: Int!): ID!
 }

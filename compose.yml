@@ -26,6 +26,20 @@ services:
   #     ME_CONFIG_MONGODB_ADMINPASSWORD: not-so-secret
   #     ME_CONFIG_MONGODB_URL: mongodb://root:not-so-secret@mongo:27017/
 
+  categories:
+    build:
+      context: .
+      dockerfile: ./src/serviceRunner/Dockerfile
+      args:
+        - SERVICE_PATH=src/services/categories
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      SERVICE_NAME: Categories
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      REDIS_CONNECTION_STRING: redis://redis
+
   products:
     build:
       context: .
@@ -68,6 +82,20 @@ services:
       DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
 
+  tags:
+    build:
+      context: .
+      dockerfile: ./src/serviceRunner/Dockerfile
+      args:
+        - SERVICE_PATH=src/services/tags
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      SERVICE_NAME: Tags
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      REDIS_CONNECTION_STRING: redis://redis
+
   users:
     build:
       context: .
@@ -89,18 +117,23 @@ services:
     ports:
       - 4000:4000
     depends_on:
+      categories:
+        condition: service_started
       products:
         condition: service_started
       reviews:
         condition: service_started
       stock:
         condition: service_started
+      tags:
+        condition: service_started
       users:
         condition: service_started
     environment:
       PORT: 4000
+      CATEGORIES_URL: http://categories/graphql
       PRODUCTS_URL: http://products/graphql
       REVIEWS_URL: http://reviews/graphql
       STOCK_URL: http://stock/graphql
+      TAGS_URL: http://tags/graphql
       USERS_URL: http://users/graphql
-
