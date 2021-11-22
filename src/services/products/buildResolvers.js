@@ -14,6 +14,8 @@ export async function buildResolvers(mongoClient, redisPubsub) {
     id: product._id,
     title: product.title,
     price: product.price,
+    categoryId: product.categoryId,
+    tagIds: product.tagIds,
   });
 
   return {
@@ -28,6 +30,8 @@ export async function buildResolvers(mongoClient, redisPubsub) {
           _id: id,
           title: args.title,
           price: args.price,
+          categoryId: args.categoryId,
+          tagIds: args.tagIds,
         });
 
         redisPubsub.publish('product:created', { id: id, countInStock: args.countInStock });
@@ -40,6 +44,8 @@ export async function buildResolvers(mongoClient, redisPubsub) {
         const product = await collection.findOne({ _id: new ObjectId(reference.id) });
         return mapper(product);
       },
+      category: product => ({ __typename: "Category", id: product.categoryId }),
+      tags: product => product.tagIds.map(tagId => ({ __typename: "Tag", id: tagId })),
     },
   };
 }
