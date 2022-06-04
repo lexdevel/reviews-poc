@@ -1,4 +1,4 @@
-# Reviewzzz
+# Reviews POC
 A yet another proof-of-concept project to learn [NodeJS](https://nodejs.org) and [Apollo Federation](https://apollographql.com). I do [livestream](https://www.twitch.tv/lexdevel) of this project development, please feel free to subscribe :)
 
 ## Development environment requirements
