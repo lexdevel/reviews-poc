@@ -21,7 +21,8 @@ const typeDefs = gql(readFileSync('./schema.graphql').toString('utf8'));
     schema: buildSubgraphSchema([
       {
         typeDefs,
-        resolvers
+        resolvers,
+        onHealthCheck: () => Promise.resolve('Healthy')
       }
     ])
   });

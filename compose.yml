@@ -1,30 +1,27 @@
-version: '3'
 services:
 
   mongo:
-    image: mongo
+    image: mongo:4.4
     restart: always
-    # ports:
-    #   - 27017:27017
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: not-so-secret
 
   redis:
-    image: redis
+    image: redis:7.2
     restart: always
-
-  # mongo-express:
-  #   image: mongo-express
-  #   ports:
-  #     - 8081:8081
-  #   depends_on:
-  #     - mongo
-  #   restart: always
-  #   environment:
-  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
-  #     ME_CONFIG_MONGODB_ADMINPASSWORD: not-so-secret
-  #     ME_CONFIG_MONGODB_URL: mongodb://root:not-so-secret@mongo:27017/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   categories:
     build:
@@ -33,12 +30,19 @@ services:
       args:
         - SERVICE_PATH=src/services/categories
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SERVICE_NAME: Categories
-      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   products:
     build:
@@ -47,12 +51,19 @@ services:
       args:
         - SERVICE_PATH=src/services/products
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SERVICE_NAME: Products
-      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   reviews:
     build:
@@ -61,12 +72,19 @@ services:
       args:
         - SERVICE_PATH=src/services/reviews
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SERVICE_NAME: Reviews
-      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   stock:
     build:
@@ -79,8 +97,13 @@ services:
       - redis
     environment:
       SERVICE_NAME: Stock
-      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   tags:
     build:
@@ -89,12 +112,19 @@ services:
       args:
         - SERVICE_PATH=src/services/tags
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SERVICE_NAME: Tags
-      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   users:
     build:
@@ -103,12 +133,19 @@ services:
       args:
         - SERVICE_PATH=src/services/users
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SERVICE_NAME: Users
-      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviewzzz?ssl=false&authSource=admin
+      DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   gateway:
     build:
@@ -118,17 +155,17 @@ services:
       - 4000:4000
     depends_on:
       categories:
-        condition: service_started
+        condition: service_healthy
       products:
-        condition: service_started
+        condition: service_healthy
       reviews:
-        condition: service_started
+        condition: service_healthy
       stock:
-        condition: service_started
+        condition: service_healthy
       tags:
-        condition: service_started
+        condition: service_healthy
       users:
-        condition: service_started
+        condition: service_healthy
     environment:
       PORT: 4000
       CATEGORIES_URL: http://categories/graphql

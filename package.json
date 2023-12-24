@@ -1,13 +1,13 @@
 {
-  "name": "reviewzzz",
+  "name": "reviews-poc",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@apollo/federation": "latest",
-    "@lexdevel/redis-pubsub": "latest",
-    "apollo-server": "latest",
-    "mongodb": "latest",
-    "redis": "latest"
+    "@apollo/federation": "^0.38.1",
+    "@lexdevel/redis-pubsub": "^0.0.5",
+    "apollo-server": "^3.13.0",
+    "mongodb": "^6.3.0",
+    "redis": "^4.6.12"
   }
 }
