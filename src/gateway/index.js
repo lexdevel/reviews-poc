@@ -1,13 +1,7 @@
 import { ApolloGateway } from '@apollo/gateway';
 import { ApolloServer } from 'apollo-server';
 
-function delay(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
-}
-
 (async () => {
-  await delay(10000);
-
   const gateway = new ApolloGateway({
     serviceList: [
       { name: "categories", url: process.env.CATEGORIES_URL },

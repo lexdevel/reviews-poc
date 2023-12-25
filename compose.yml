@@ -5,14 +5,16 @@ services:
     restart: always
     ports:
       - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: not-so-secret
     healthcheck:
       test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
       retries: 5
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: not-so-secret
+    volumes:
+      - ./db/0000__baseline.js:/docker-entrypoint-initdb.d/0000_baseline.js
 
   redis:
     image: redis:7.2
