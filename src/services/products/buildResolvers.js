@@ -1,12 +1,11 @@
 import { ObjectId, MongoClient } from 'mongodb';
-import { RedisPubsub } from '@lexdevel/redis-pubsub';
+import { createClient } from 'redis';
 
 /**
- * Build resolvers.
- * @param {MongoClient} mongoClient - Mongo client.
- * @param {RedisPubsub} redisPubsub - Redis pubsub.
+ * @param {MongoClient} mongoClient
+ * @param {ReturnType<createClient>} redisClient
  */
-export async function buildResolvers(mongoClient, redisPubsub) {
+export async function buildResolvers(mongoClient, redisClient) {
   const db = mongoClient.db();
   const collection = db.collection('products');
 
@@ -24,19 +23,17 @@ export async function buildResolvers(mongoClient, redisPubsub) {
     },
     Mutation: {
       createProduct: async (parent, args, context, info) => {
-        const id = new ObjectId();
-
-        await collection.insertOne({
-          _id: id,
+        const result = await collection.insertOne({
+          _id: new ObjectId(),
           title: args.title,
           price: args.price,
           categoryId: args.categoryId,
           tagIds: args.tagIds,
         });
 
-        redisPubsub.publish('product:created', { id: id, countInStock: args.countInStock });
+        redisClient.publish('product:created', JSON.stringify({ id: result.insertedId, countInStock: args.countInStock }));
 
-        return id;
+        return result.insertedId;
       },
     },
     Product: {

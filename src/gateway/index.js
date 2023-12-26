@@ -1,5 +1,6 @@
 import { ApolloGateway } from '@apollo/gateway';
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
 
 (async () => {
   const gateway = new ApolloGateway({
@@ -19,6 +20,6 @@ import { ApolloServer } from 'apollo-server';
     subscriptions: false,
   });
 
-  const { url } = await server.listen({ port: process.env.PORT });
-  console.log(`Gateway is running on ${url}...`);
+  const { url } = await startStandaloneServer(server, { listen: { port: process.env.PORT || 4000 } });
+  console.log(`gateway is running on ${url}...`);
 })();

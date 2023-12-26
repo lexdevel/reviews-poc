@@ -1,13 +1,11 @@
 import { ObjectId, MongoClient } from 'mongodb';
-import { ApolloError } from 'apollo-server-errors';
-import { RedisPubsub } from '@lexdevel/redis-pubsub';
+import { createClient } from 'redis';
 
 /**
- * Build resolvers.
- * @param {MongoClient} mongoClient - Mongo client.
- * @param {RedisPubsub} redisPubsub - Redis pubsub.
+ * @param {MongoClient} mongoClient
+ * @param {ReturnType<createClient>} redisClient
  */
-export async function buildResolvers(mongoClient, redisPubsub) {
+export async function buildResolvers(mongoClient, redisClient) {
   const db = mongoClient.db();
   const collection = db.collection('users');
 
@@ -17,46 +15,26 @@ export async function buildResolvers(mongoClient, redisPubsub) {
     fullname: user.fullname,
   });
 
-  const runInTransaction = async func => {
-    const session = mongoClient.startSession();
-    session.startTransaction();
-
-    try {
-      await func();
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      if (session.inTransaction()) {
-        await session.commitTransaction();
-      }
-    }
-  };
-
   return {
     Query: {
       users: async (parent, args, context, info) => collection.find().map(mapper).toArray(),
     },
     Mutation: {
       createUser: async (parent, args, context, info) => {
-        const id = new ObjectId();
+        try {
+          const result = await collection.insertOne({ _id: id, username: args.username, fullname: args.fullname });
 
-        await runInTransaction(async () => {
-          const user = await collection.findOne({ username: args.username });
-          if (user !== null) {
-            throw new ApolloError(`The user with specified username '${args.username}' already exists.`, 'CONFLICT');
+          redisPubsub.publish('user:created', { id: id, username: args.username, fullname: args.fullname });
+
+          return result.insertedId;
+        } catch (error) {
+          if (error.code === 11000) {
+            // MongoDB error code 11000 is for duplicate key error
+            throw new GraphQLError('User with the username provided already exists', { extensions: { code: 'BAD_REQUEST' } });
           }
 
-          await collection.insertOne({
-            _id: id,
-            username: args.username,
-            fullname: args.fullname,
-          });
-        });
-
-        redisPubsub.publish('user:created', { id: id, username: args.username, fullname: args.fullname });
-
-        return id;
+          throw new GraphQLError('An unexpected error occurred', { extensions: { code: 'INTERNAL_SERVER_ERROR' }, originalError: error });
+        }
       },
     },
     User: {

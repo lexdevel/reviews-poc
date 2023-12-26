@@ -1,10 +1,10 @@
 {
-  "name": "gateway",
+  "name": "reviews-poc-gateway",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@apollo/gateway": "latest",
-    "apollo-server": "latest"
+    "@apollo/gateway": "^2.6.2",
+    "@apollo/server": "^4.9.5"
   }
 }

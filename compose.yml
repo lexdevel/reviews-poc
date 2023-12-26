@@ -18,7 +18,10 @@ services:
 
   redis:
     image: redis:7.2
+    command: redis-server
     restart: always
+    ports:
+      - 6379:6379
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -28,20 +31,20 @@ services:
   categories:
     build:
       context: .
-      dockerfile: ./src/serviceRunner/Dockerfile
+      dockerfile: ./src/runner/Dockerfile
       args:
-        - SERVICE_PATH=src/services/categories
+        - SERVICE_NAME=categories
     depends_on:
       mongo:
         condition: service_healthy
       redis:
         condition: service_healthy
     environment:
-      SERVICE_NAME: Categories
       DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+      SERVICE_NAME: Categories
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      test: ["CMD", "curl", "--fail", "--header", "content-type: application/json", "http://localhost/graphql?query=%7B__typename%7D"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -49,20 +52,20 @@ services:
   products:
     build:
       context: .
-      dockerfile: ./src/serviceRunner/Dockerfile
+      dockerfile: ./src/runner/Dockerfile
       args:
-        - SERVICE_PATH=src/services/products
+        - SERVICE_NAME=products
     depends_on:
       mongo:
         condition: service_healthy
       redis:
         condition: service_healthy
     environment:
-      SERVICE_NAME: Products
       DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+      SERVICE_NAME: Products
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      test: ["CMD", "curl", "--fail", "--header", "content-type: application/json", "http://localhost/graphql?query=%7B__typename%7D"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -70,20 +73,20 @@ services:
   reviews:
     build:
       context: .
-      dockerfile: ./src/serviceRunner/Dockerfile
+      dockerfile: ./src/runner/Dockerfile
       args:
-        - SERVICE_PATH=src/services/reviews
+        - SERVICE_NAME=reviews
     depends_on:
       mongo:
         condition: service_healthy
       redis:
         condition: service_healthy
     environment:
-      SERVICE_NAME: Reviews
       DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+      SERVICE_NAME: Reviews
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      test: ["CMD", "curl", "--fail", "--header", "content-type: application/json", "http://localhost/graphql?query=%7B__typename%7D"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -91,18 +94,20 @@ services:
   stock:
     build:
       context: .
-      dockerfile: ./src/serviceRunner/Dockerfile
+      dockerfile: ./src/runner/Dockerfile
       args:
-        - SERVICE_PATH=src/services/stock
+        - SERVICE_NAME=stock
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
-      SERVICE_NAME: Stock
       DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+      SERVICE_NAME: Stock
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      test: ["CMD", "curl", "--fail", "--header", "content-type: application/json", "http://localhost/graphql?query=%7B__typename%7D"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -110,20 +115,20 @@ services:
   tags:
     build:
       context: .
-      dockerfile: ./src/serviceRunner/Dockerfile
+      dockerfile: ./src/runner/Dockerfile
       args:
-        - SERVICE_PATH=src/services/tags
+        - SERVICE_NAME=tags
     depends_on:
       mongo:
         condition: service_healthy
       redis:
         condition: service_healthy
     environment:
-      SERVICE_NAME: Tags
       DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+      SERVICE_NAME: Tags
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      test: ["CMD", "curl", "--fail", "--header", "content-type: application/json", "http://localhost/graphql?query=%7B__typename%7D"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -131,20 +136,20 @@ services:
   users:
     build:
       context: .
-      dockerfile: ./src/serviceRunner/Dockerfile
+      dockerfile: ./src/runner/Dockerfile
       args:
-        - SERVICE_PATH=src/services/users
+        - SERVICE_NAME=users
     depends_on:
       mongo:
         condition: service_healthy
       redis:
         condition: service_healthy
     environment:
-      SERVICE_NAME: Users
       DB_CONNECTION_STRING: mongodb://root:not-so-secret@mongo:27017/reviews-poc-db?ssl=false&authSource=admin
       REDIS_CONNECTION_STRING: redis://redis
+      SERVICE_NAME: Users
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/.well-known/apollo/server-health"]
+      test: ["CMD", "curl", "--fail", "--header", "content-type: application/json", "http://localhost/graphql?query=%7B__typename%7D"]
       interval: 5s
       timeout: 5s
       retries: 5

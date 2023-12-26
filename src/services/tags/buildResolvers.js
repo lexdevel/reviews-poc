@@ -1,13 +1,11 @@
 import { ObjectId, MongoClient } from 'mongodb';
-import { ApolloError } from 'apollo-server-errors';
-import { RedisPubsub } from '@lexdevel/redis-pubsub';
+import { createClient } from 'redis';
 
 /**
- * Build resolvers.
- * @param {MongoClient} mongoClient - Mongo client.
- * @param {RedisPubsub} redisPubsub - Redis pubsub.
+ * @param {MongoClient} mongoClient
+ * @param {ReturnType<createClient>} redisClient
  */
-export async function buildResolvers(mongoClient, redisPubsub) {
+export async function buildResolvers(mongoClient, redisClient) {
   const db = mongoClient.db();
   const collection = db.collection('tags');
 
@@ -16,45 +14,26 @@ export async function buildResolvers(mongoClient, redisPubsub) {
     name: tag.name,
   });
 
-  const runInTransaction = async func => {
-    const session = mongoClient.startSession();
-    session.startTransaction();
-
-    try {
-      await func();
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      if (session.inTransaction()) {
-        await session.commitTransaction();
-      }
-    }
-  };
-
   return {
     Query: {
       tags: async (parent, args, context, info) => collection.find().map(mapper).toArray(),
     },
     Mutation: {
       createTag: async (parent, args, context, info) => {
-        const id = new ObjectId();
+        try {
+          const result = await collection.insertOne({ _id: new ObjectId(), name: args.name });
 
-        await runInTransaction(async () => {
-          const tag = await collection.findOne({ name: args.name });
-          if (tag !== null) {
-            throw new ApolloError(`The tag with specified name '${args.name}' already exists.`, 'CONFLICT');
+          redisPubsub.publish('tag:created', { id: id, name: args.name });
+
+          return result.insertedId;
+        } catch (error) {
+          if (error.code === 11000) {
+            // MongoDB error code 11000 is for duplicate key error
+            throw new GraphQLError('Tag with the name provided already exists', { extensions: { code: 'BAD_REQUEST' } });
           }
 
-          await collection.insertOne({
-            _id: id,
-            name: args.name,
-          });
-        });
-
-        redisPubsub.publish('tag:created', { id: id, name: args.name });
-
-        return id;
+          throw new GraphQLError('An unexpected error occurred', { extensions: { code: 'INTERNAL_SERVER_ERROR' }, originalError: error });
+        }
       },
     },
     Tag: {

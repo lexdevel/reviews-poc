@@ -7,6 +7,11 @@ db.createCollection('stock');
 db.createCollection('tags');
 db.createCollection('users');
 
+db.getCollection('categories').createIndex({ name: 1 }, { unique: true });
+db.getCollection('products').createIndex({ categoryId: 1 });
+db.getCollection('tags').createIndex({ name: 1 }, { unique: true });
+db.getCollection('users').createIndex({ username: 1 }, { unique: true });
+
 const ids = {
   categories: {
     beer: new ObjectId()
