@@ -29,6 +29,23 @@ services:
       timeout: 5s
       retries: 5
 
+  identity:
+    build:
+      context: ./src/identity
+      dockerfile: ./Dockerfile
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - 4001:4001
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--header", "content-type: application/json", "http://localhost:4001/.well-known/openid-configuration"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   categories:
     build:
       context: .
