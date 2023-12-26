@@ -23,8 +23,7 @@ export async function buildResolvers(mongoClient, redisClient) {
         try {
           const result = await collection.insertOne({ _id: new ObjectId(), name: args.name });
 
-          redisPubsub.publish('tag:created', { id: id, name: args.name });
-
+          await redisClient.publish('tag:created', { id: id, name: args.name });
           return result.insertedId;
         } catch (error) {
           if (error.code === 11000) {
@@ -34,6 +33,15 @@ export async function buildResolvers(mongoClient, redisClient) {
 
           throw new GraphQLError('An unexpected error occurred', { extensions: { code: 'INTERNAL_SERVER_ERROR' }, originalError: error });
         }
+      },
+      removeTag: async (parent, args, context, info) => {
+        const result = await collection.findOneAndDelete({ _id: new ObjectId(args.id) });
+        if (!result) {
+          return false;
+        }
+
+        await redisClient.publish('tag:removed', JSON.stringify({ id: args.id }));
+        return true;
       },
     },
     Tag: {

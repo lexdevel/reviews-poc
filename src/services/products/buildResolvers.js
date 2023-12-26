@@ -17,6 +17,16 @@ export async function buildResolvers(mongoClient, redisClient) {
     tagIds: product.tagIds,
   });
 
+  redisClient.subscribe('category:removed', async message => {
+    const { id } = JSON.parse(message);
+    await collection.updateMany({ categoryId: new ObjectId(id) }, { $set: { categoryId: new ObjectId('000000000000000000000000') } });
+  });
+
+  redisClient.subscribe('tag:removed', async message => {
+    const { id } = JSON.parse(message);
+    await collection.updateMany({}, { $pull: { tagIds: new ObjectId(id) } });
+  });
+
   return {
     Query: {
       products: async (parent, args, context, info) => await collection.find().map(mapper).toArray(),
@@ -31,7 +41,7 @@ export async function buildResolvers(mongoClient, redisClient) {
           tagIds: args.tagIds,
         });
 
-        redisClient.publish('product:created', JSON.stringify({ id: result.insertedId, countInStock: args.countInStock }));
+        await redisClient.publish('product:created', JSON.stringify({ id: result.insertedId, countInStock: args.countInStock }));
 
         return result.insertedId;
       },

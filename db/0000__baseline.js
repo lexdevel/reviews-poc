@@ -12,6 +12,8 @@ db.getCollection('products').createIndex({ categoryId: 1 });
 db.getCollection('tags').createIndex({ name: 1 }, { unique: true });
 db.getCollection('users').createIndex({ username: 1 }, { unique: true });
 
+db.getCollection('categories').insertOne({ _id: new ObjectId('000000000000000000000000'), name: 'Unspecified' });
+
 const ids = {
   categories: {
     beer: new ObjectId()

@@ -20,8 +20,7 @@ export async function buildResolvers(mongoClient, redisClient) {
         try {
           const result = await collection.insertOne({ _id: new ObjectId(), name: args.name });
 
-          redisClient.publish('category:created', JSON.stringify({ id: result.insertedId, name: args.name }));
-
+          await redisClient.publish('category:created', JSON.stringify({ id: result.insertedId, name: args.name }));
           return result.insertedId;
         } catch (error) {
           if (error.code === 11000) {
@@ -31,6 +30,19 @@ export async function buildResolvers(mongoClient, redisClient) {
 
           throw new GraphQLError('An unexpected error occurred', { extensions: { code: 'INTERNAL_SERVER_ERROR' }, originalError: error });
         }
+      },
+      removeCategory: async (parent, args, context, info) => {
+        if (args.id === '000000000000000000000000') {
+          throw new GraphQLError('Cannot remove the default category', { extensions: { code: 'BAD_REQUEST' } });
+        }
+
+        const result = await collection.findOneAndDelete({ _id: new ObjectId(args.id) });
+        if (!result) {
+          return false;
+        }
+
+        await redisClient.publish('category:removed', JSON.stringify({ id: args.id }));
+        return true;
       },
     },
     Category: {

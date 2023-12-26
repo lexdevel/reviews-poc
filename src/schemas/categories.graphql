@@ -9,4 +9,5 @@ extend type Query {
 
 extend type Mutation {
   createCategory(name: String!): ID!
+  removeCategory(id: ID!): Boolean!
 }

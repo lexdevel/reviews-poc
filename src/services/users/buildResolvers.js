@@ -24,8 +24,7 @@ export async function buildResolvers(mongoClient, redisClient) {
         try {
           const result = await collection.insertOne({ _id: id, username: args.username, fullname: args.fullname });
 
-          redisPubsub.publish('user:created', { id: id, username: args.username, fullname: args.fullname });
-
+          await redisClient.publish('user:created', { id: id, username: args.username, fullname: args.fullname });
           return result.insertedId;
         } catch (error) {
           if (error.code === 11000) {
