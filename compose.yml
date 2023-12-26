@@ -3,6 +3,7 @@ services:
   mongo:
     image: mongo:4.4
     restart: always
+    attach: false # Disable logging to stdout
     ports:
       - 27017:27017
     environment:
@@ -18,8 +19,8 @@ services:
 
   redis:
     image: redis:7.2
-    command: redis-server
     restart: always
+    attach: false # Disable logging to stdout
     ports:
       - 6379:6379
     healthcheck:
