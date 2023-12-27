@@ -206,7 +206,7 @@ services:
       dockerfile: ./Dockerfile
     attach: false # Disable logging to stdout
     ports:
-      - 3000:80
+      - 3000:3000
     depends_on:
       gateway:
         condition: service_started

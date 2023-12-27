@@ -28,7 +28,7 @@ export function UsersTable() {
         {
           users.map(user => (
             <tr key={user.id}>
-              <td>{user.id}</td>
+              <td width="20%"><code>{user.id}</code></td>
               <td>{user.username}</td>
               <td>{user.fullname}</td>
               <td>

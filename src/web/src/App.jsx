@@ -1,7 +1,15 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Container, Navbar, Nav } from 'react-bootstrap';
+import { useAuth } from 'react-oidc-context';
 
 export default function App() {
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogOut = async () => {
+    await auth.signoutSilent();
+    navigate('/');
+  };
 
   return (
     <>
@@ -14,6 +22,22 @@ export default function App() {
               <Nav.Link href="/products">Products</Nav.Link>
               <Nav.Link href="/reviews">Reviews</Nav.Link>
               <Nav.Link href="/users">Users</Nav.Link>
+              {
+                auth.isAuthenticated && auth.user.scopes.includes('admin')
+                  ?
+                    <>
+                      <Nav.Link href="/categories">Categories</Nav.Link>
+                      <Nav.Link href="/tags">Tags</Nav.Link>
+                    </>
+                  : null
+              }
+            </Nav>
+            <Nav className="justify-content-end">
+              {
+                auth.isAuthenticated
+                  ? <Nav.Link onClick={handleLogOut}>Logout</Nav.Link>
+                  : <Nav.Link href="/login">Login</Nav.Link>
+              }
             </Nav>
           </Container>
         </Navbar>
@@ -21,9 +45,6 @@ export default function App() {
 
       <main role="main">
         <Container>
-          {/* <ProductsTable />
-          <ReviewsTable />
-          <UsersTable /> */}
           <Outlet />
         </Container>
       </main>

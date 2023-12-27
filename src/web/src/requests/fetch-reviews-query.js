@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 export const fetchReviewsQuery = gql`
 query {
   reviews {
+    id
     commentary
     author {
       id

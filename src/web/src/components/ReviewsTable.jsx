@@ -18,6 +18,7 @@ export function ReviewsTable() {
     <Table bordered hover>
       <thead>
         <tr>
+          <th>ID</th>
           <th>Product</th>
           <th>Author</th>
           <th>Commentary</th>
@@ -27,6 +28,7 @@ export function ReviewsTable() {
         {
           reviews.map(review => (
             <tr key={`${review.id}-${review.product.id}-${review.author.id}`}>
+              <td width="20%"><code>{review.id}</code></td>
               <td>{review.product.title}</td>
               <td>{review.author.fullname}</td>
               <td>{review.commentary}</td>

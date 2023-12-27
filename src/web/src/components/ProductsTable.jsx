@@ -21,6 +21,8 @@ export function ProductsTable() {
           <th>ID</th>
           <th>Title</th>
           <th>Price</th>
+          <th>Category</th>
+          <th>Tags</th>
           <th>Reviews</th>
         </tr>
       </thead>
@@ -28,9 +30,25 @@ export function ProductsTable() {
         {
           products.map(product => (
             <tr key={product.id}>
-              <td>{product.id}</td>
+              <td width="20%"><code>{product.id}</code></td>
               <td>{product.title}</td>
               <td>{product.price}</td>
+              <td>{product.category.name}</td>
+              <td>
+                {
+                  <Table hover>
+                    <tbody>
+                      {
+                        product.tags.map(tag => (
+                          <tr key={`${product.id}-${tag.id}`}>
+                            <td>{tag.name}</td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </Table>
+                }
+              </td>
               <td>
                 <Table hover>
                   <thead>

@@ -3,11 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider } from 'react-oidc-context';
 
-import { Home } from './pages/Home';
-import { ProductsPage } from './pages/ProductsPage';
-import { ReviewsPage } from './pages/ReviewsPage';
-import { UsersPage } from './pages/UsersPage';
+import { Home, LoginPage, ProductsPage, ReviewsPage, UsersPage, CategoriesPage, TagsPage } from './pages';
 
 import App from './App';
 
@@ -21,6 +19,14 @@ const router= createBrowserRouter([
         element: <Home />
       },
       {
+        path: '/categories',
+        element: <CategoriesPage />
+      },
+      {
+        path: '/tags',
+        element: <TagsPage />
+      },
+      {
         path: '/products',
         element: <ProductsPage />
       },
@@ -31,13 +37,26 @@ const router= createBrowserRouter([
       {
         path: '/users',
         element: <UsersPage />
+      },
+      {
+        path: '/login',
+        element: <LoginPage />
       }
     ]
   }
 ]);
 
+const oidc = {
+  authority: 'http://localhost:4001',
+  grant_type: 'password',
+  client_id: 'reviews-poc-client',
+  client_secret: 'qwe123f43223ds',
+};
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider {...oidc}>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 )
