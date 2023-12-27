@@ -5,14 +5,19 @@ const configuration = {
     {
       client_id: 'reviews-poc-server',
       client_secret: 'cxop234d1sd23f',
-      redirect_uris: [ 'http://localhost:4000/callback' ],
+      grant_types: [ 'client_credentials' ],
+      redirect_uris: [],
+      response_types: [],
     },
     {
       client_id: 'reviews-poc-client',
       client_secret: 'qwe123f43223ds',
       redirect_uris: [ 'http://localhost:3000/callback' ],
     }
-  ]
+  ],
+  features: {
+    clientCredentials: { enabled: true },
+  },
 };
 
 const oidc = new Provider('http://localhost:4001', configuration);

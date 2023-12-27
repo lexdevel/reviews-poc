@@ -199,3 +199,14 @@ services:
       STOCK_URL: http://stock/graphql
       TAGS_URL: http://tags/graphql
       USERS_URL: http://users/graphql
+
+  web:
+    build:
+      context: ./src/web
+      dockerfile: ./Dockerfile
+    attach: false # Disable logging to stdout
+    ports:
+      - 3000:80
+    depends_on:
+      gateway:
+        condition: service_started
