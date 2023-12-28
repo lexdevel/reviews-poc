@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useAuth } from 'react-oidc-context';
 import { CategoriesTable, CreateCategoryForm } from '../components';
+import { CategoriesProvider } from '../providers/CategoriesProvider';
 
 export function CategoriesPage() {
   const [showCreateCategoryForm, setShowCreateCategoryForm] = useState(false);
@@ -16,7 +17,7 @@ export function CategoriesPage() {
   }
 
   return (
-    <>
+    <CategoriesProvider>
       <h2>Categories</h2>
       <CategoriesTable />
       {
@@ -25,6 +26,6 @@ export function CategoriesPage() {
           : null
       }
       <CreateCategoryForm show={showCreateCategoryForm} onHide={() => { setShowCreateCategoryForm(false); navigate('/categories', { replace: true }); } } />
-    </>
+    </CategoriesProvider>
   )
 }

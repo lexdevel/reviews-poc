@@ -3,17 +3,23 @@ import { Button, Modal } from 'react-bootstrap';
 
 import { apolloClient } from '../../lib/apollo-client';
 import { createCategoryMutation } from '../../requests';
+import { useCategoriesContext } from '../../providers/CategoriesProvider';
 
 export function CreateCategoryForm({ show, onHide }) {
-  const [name, setName] = useState('');
+  const [ name, setName ] = useState('');
+  const { categories, setCategories } = useCategoriesContext();
 
   const handleCreate = async () => {
-    await apolloClient.mutate({
+    const response = await apolloClient.mutate({
       mutation: createCategoryMutation,
       variables: {
         name,
       },
     });
+
+    const category = { id: response.data.createCategory, name: name };
+    // addCategory(category);
+    setCategories([...categories, category]);
 
     setName('');
     onHide();

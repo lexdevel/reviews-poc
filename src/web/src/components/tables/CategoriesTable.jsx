@@ -1,20 +1,18 @@
-import { useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { useAuth } from 'react-oidc-context';
 
+import { useCategoriesContext } from '../../providers/CategoriesProvider';
 import { apolloClient } from '../../lib/apollo-client';
-import { fetchCategoriesQuery } from '../../requests';
+import { removeCategoryMutation } from '../../requests';
 
 export function CategoriesTable() {
-  const [categories, setCategories] = useState([]);
   const auth = useAuth();
+  const { categories, setCategories } = useCategoriesContext();
 
-  const fetchCategories = async () => {
-    const response = await apolloClient.query({ query: fetchCategoriesQuery });
-    setCategories(response.data.categories);
+  const removeCategory = async (category) => {
+    await apolloClient.mutate({ mutation: removeCategoryMutation, variables: { id: category.id } });
+    setCategories(categories.filter(c => c.id != category.id));
   };
-
-  useEffect(() => { fetchCategories().catch(console.error); }, []);
 
   return (
     <Table bordered hover>
@@ -39,7 +37,7 @@ export function CategoriesTable() {
                 auth.isAuthenticated && auth.user.scopes.includes('admin')
                   ? <td width="20%">
                       {/*<Button variant="warning" size="sm" className="me-1">Edit</Button>*/}
-                      <Button variant="danger" size="sm" className="me-1">Delete</Button>
+                      <Button variant="danger" size="sm" className="me-1" onClick={() => removeCategory(category)}>Delete</Button>
                     </td>
                   : null
               }
