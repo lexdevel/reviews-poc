@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 
-import { apolloClient } from '../lib/apollo-client';
-import { fetchProductsQuery } from '../requests';
+import { apolloClient } from '../../lib/apollo-client';
+import { fetchProductsQuery } from '../../requests';
 
 export function ProductsTable() {
   const [products, setProducts] = useState([]);
@@ -36,7 +36,7 @@ export function ProductsTable() {
               <td>{product.category.name}</td>
               <td>
                 {
-                  <Table hover>
+                  <Table hover size="sm">
                     <tbody>
                       {
                         product.tags.map(tag => (
@@ -50,7 +50,7 @@ export function ProductsTable() {
                 }
               </td>
               <td>
-                <Table hover>
+                <Table hover size="sm">
                   <thead>
                     <tr>
                       <th>Author</th>

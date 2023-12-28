@@ -1,5 +1,7 @@
-export * from './ProductsTable';
-export * from './ReviewsTable';
-export * from './UsersTable';
-export * from './CategoriesTable';
-export * from './TagsTable';
+export * from './forms/CreateCategoryForm';
+
+export * from './tables/CategoriesTable';
+export * from './tables/ProductsTable';
+export * from './tables/ReviewsTable';
+export * from './tables/TagsTable';
+export * from './tables/UsersTable';

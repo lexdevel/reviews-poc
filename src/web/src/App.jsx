@@ -18,7 +18,6 @@ export default function App() {
           <Container fluid>
             <Navbar.Brand href="/">Reviews POC</Navbar.Brand>
             <Nav className="me-auto">
-              <Nav.Link href="/">Home</Nav.Link>
               <Nav.Link href="/products">Products</Nav.Link>
               <Nav.Link href="/reviews">Reviews</Nav.Link>
               <Nav.Link href="/users">Users</Nav.Link>

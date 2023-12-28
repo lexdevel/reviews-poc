@@ -5,7 +5,15 @@ import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from 'react-oidc-context';
 
-import { Home, LoginPage, ProductsPage, ReviewsPage, UsersPage, CategoriesPage, TagsPage } from './pages';
+import { oidc } from './lib/apollo-client';
+
+import { HomePage } from './pages/HomePage';
+import { CategoriesPage } from './pages/CategoriesPage';
+import { TagsPage } from './pages/TagsPage';
+import { ProductsPage } from './pages/ProductsPage';
+import { ReviewsPage } from './pages/ReviewsPage';
+import { UsersPage } from './pages/UsersPage';
+import { LoginPage } from './pages/LoginPage';
 
 import App from './App';
 
@@ -16,7 +24,7 @@ const router= createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />
+        element: <HomePage />
       },
       {
         path: '/categories',
@@ -45,13 +53,6 @@ const router= createBrowserRouter([
     ]
   }
 ]);
-
-const oidc = {
-  authority: 'http://localhost:4001',
-  grant_type: 'password',
-  client_id: 'reviews-poc-client',
-  client_secret: 'qwe123f43223ds',
-};
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

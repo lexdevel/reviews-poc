@@ -33,6 +33,7 @@ services:
     build:
       context: ./src/identity
       dockerfile: ./Dockerfile
+    attach: false # Disable logging to stdout
     depends_on:
       mongo:
         condition: service_healthy
@@ -210,3 +211,5 @@ services:
     depends_on:
       gateway:
         condition: service_started
+    volumes:
+      - ./src/web/src:/app/src # This is needed to enable hot reloading while developing web-frontend via docker

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 
-import { apolloClient } from '../lib/apollo-client';
-import { fetchUsersQuery } from '../requests';
+import { apolloClient } from '../../lib/apollo-client';
+import { fetchUsersQuery } from '../../requests';
 
 export function UsersTable() {
   const [users, setUsers] = useState([]);
@@ -32,7 +32,7 @@ export function UsersTable() {
               <td>{user.username}</td>
               <td>{user.fullname}</td>
               <td>
-                <Table hover>
+                <Table hover size="sm">
                   <thead>
                     <tr>
                       <th>Product</th>

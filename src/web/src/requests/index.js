@@ -1,5 +1,7 @@
-export * from './fetch-products-query';
-export * from './fetch-reviews-query';
-export * from './fetch-users-query';
-export * from './fetch-categories-query';
-export * from './fetch-tags-query';
+export * from './mutations/category-create-mutation';
+
+export * from './queries/fetch-categories-query';
+export * from './queries/fetch-products-query';
+export * from './queries/fetch-reviews-query';
+export * from './queries/fetch-tags-query';
+export * from './queries/fetch-users-query';
