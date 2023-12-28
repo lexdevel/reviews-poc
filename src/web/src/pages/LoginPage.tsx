@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { Form, Button, Container } from 'react-bootstrap';
@@ -6,12 +6,12 @@ import { Form, Button, Container } from 'react-bootstrap';
 export function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const handleSignIn = async (event) => {
+  const handleSignIn = async (event: FormEvent) => {
     event.preventDefault();
 
     const response = await auth.signinResourceOwnerCredentials({ username, password });

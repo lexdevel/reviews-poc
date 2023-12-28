@@ -5,12 +5,13 @@ export const oidc = {
   grant_type: 'password',
   client_id: 'reviews-poc-client',
   client_secret: 'qwe123f43223ds',
+  redirect_uri: '',
 };
 
 const buildAuthorizationHeader = () => {
   const session = sessionStorage.getItem(`oidc.user:${oidc.authority}:${oidc.client_id}`);
   if (!session) {
-    return null;
+    return '';
   }
 
   const { access_token, token_type } = JSON.parse(session);
