@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { useAuth } from 'react-oidc-context';
 
 import { apolloClient } from '../../lib/apollo-client';
 import { fetchTagsQuery } from '../../requests';
+import { Tag } from '../../models';
 
-export function TagsTable() {
-  const [tags, setTags] = useState([]);
+export const TagsTable: FunctionComponent = () => {
+  const [tags, setTags] = useState<Tag[]>([]);
 
   const fetchTags = async () => {
     const response = await apolloClient.query({ query: fetchTagsQuery });

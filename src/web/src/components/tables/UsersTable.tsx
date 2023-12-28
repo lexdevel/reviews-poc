@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 
 import { apolloClient } from '../../lib/apollo-client';
 import { fetchUsersQuery } from '../../requests';
+import { User } from '../../models';
 
-export function UsersTable() {
-  const [users, setUsers] = useState([]);
+export const UsersTable: FunctionComponent = () => {
+  const [users, setUsers] = useState<User[]>([]);
 
   const fetchUsers = async () => {
     const response = await apolloClient.query({ query: fetchUsersQuery});
@@ -41,9 +42,9 @@ export function UsersTable() {
                   </thead>
                   <tbody>
                     {
-                      user.reviews.map(review => (
+                      user.reviews!.map(review => (
                         <tr key={`${user.id}-${review.id}`}>
-                          <td>{review.product.title}</td>
+                          <td>{review.product!.title}</td>
                           <td>{review.commentary}</td>
                         </tr>
                       ))

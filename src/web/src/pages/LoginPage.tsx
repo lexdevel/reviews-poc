@@ -1,9 +1,9 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, FunctionComponent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { Form, Button, Container } from 'react-bootstrap';
 
-export function LoginPage() {
+export const LoginPage: FunctionComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

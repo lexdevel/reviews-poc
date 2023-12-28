@@ -1,15 +1,17 @@
+import { FunctionComponent } from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { useAuth } from 'react-oidc-context';
 
 import { useCategoriesContext } from '../../providers/CategoriesProvider';
 import { apolloClient } from '../../lib/apollo-client';
 import { removeCategoryMutation } from '../../requests';
+import { Category } from '../../models';
 
-export function CategoriesTable() {
+export const CategoriesTable: FunctionComponent = () => {
   const auth = useAuth();
   const { categories, setCategories } = useCategoriesContext();
 
-  const removeCategory = async (category) => {
+  const removeCategory = async (category: Category) => {
     await apolloClient.mutate({ mutation: removeCategoryMutation, variables: { id: category.id } });
     setCategories(categories.filter(c => c.id != category.id));
   };
@@ -21,7 +23,7 @@ export function CategoriesTable() {
           <th>ID</th>
           <th>Name</th>
           {
-            auth.isAuthenticated && auth.user.scopes.includes('admin')
+            auth.isAuthenticated && auth.user?.scopes.includes('admin')
               ? <th></th>
               : null
           }
@@ -34,7 +36,7 @@ export function CategoriesTable() {
               <td width="20%"><code>{category.id}</code></td>
               <td>{category.name}</td>
               {
-                auth.isAuthenticated && auth.user.scopes.includes('admin')
+                auth.isAuthenticated && auth.user?.scopes.includes('admin')
                   ? <td width="20%">
                       {/*<Button variant="warning" size="sm" className="me-1">Edit</Button>*/}
                       <Button variant="danger" size="sm" className="me-1" onClick={() => removeCategory(category)}>Delete</Button>

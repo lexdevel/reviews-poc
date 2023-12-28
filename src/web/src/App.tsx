@@ -1,8 +1,9 @@
+import { FunctionComponent } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import { useAuth } from 'react-oidc-context';
 
-export default function App() {
+export const App: FunctionComponent = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -22,7 +23,7 @@ export default function App() {
               <Nav.Link href="/reviews">Reviews</Nav.Link>
               <Nav.Link href="/users">Users</Nav.Link>
               {
-                auth.isAuthenticated && auth.user.scopes.includes('admin')
+                auth.isAuthenticated && auth.user?.scopes.includes('admin')
                   ?
                     <>
                       <Nav.Link href="/categories">Categories</Nav.Link>

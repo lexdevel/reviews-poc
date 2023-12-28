@@ -1,6 +1,7 @@
+import { FunctionComponent } from 'react';
 import { ProductsTable } from '../components';
 
-export function ProductsPage() {
+export const ProductsPage: FunctionComponent = () => {
 
   return (
     <>

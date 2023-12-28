@@ -1,5 +1,5 @@
-import { User } from "oidc-client-ts";
-import { Product } from "./Product";
+import { Product } from './Product';
+import { User } from'./User';
 
 export type Review = {
   id: string;

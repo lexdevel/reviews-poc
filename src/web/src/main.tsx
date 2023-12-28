@@ -14,8 +14,7 @@ import { ProductsPage } from './pages/ProductsPage';
 import { ReviewsPage } from './pages/ReviewsPage';
 import { UsersPage } from './pages/UsersPage';
 import { LoginPage } from './pages/LoginPage';
-
-import App from './App';
+import { App } from './App';
 
 const router= createBrowserRouter([
   {

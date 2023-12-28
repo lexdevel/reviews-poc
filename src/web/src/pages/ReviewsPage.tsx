@@ -1,6 +1,7 @@
+import { FunctionComponent } from 'react';
 import { ReviewsTable } from '../components';
 
-export function ReviewsPage() {
+export const ReviewsPage: FunctionComponent = () => {
 
   return (
     <>

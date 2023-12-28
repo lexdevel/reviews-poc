@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
 import { apolloClient } from '../../lib/apollo-client';
 import { createCategoryMutation } from '../../requests';
 import { useCategoriesContext } from '../../providers/CategoriesProvider';
 
-export function CreateCategoryForm({ show, onHide }) {
+type CreateCategoryFormProps = {
+  show: boolean;
+  onHide: () => void;
+};
+
+export const CreateCategoryForm: FunctionComponent<CreateCategoryFormProps> = ({ show, onHide }: CreateCategoryFormProps) => {
   const [ name, setName ] = useState('');
   const { categories, setCategories } = useCategoriesContext();
 
@@ -26,7 +31,7 @@ export function CreateCategoryForm({ show, onHide }) {
   };
 
   return (
-    <Modal show={show} onHide={onHide} animation={true} size="md">
+    <Modal show={show} onHide={onHide} animation={true} size="sm">
       <Modal.Header closeButton>
         <Modal.Title>Create new category</Modal.Title>
       </Modal.Header>

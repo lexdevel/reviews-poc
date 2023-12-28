@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { TagsTable } from '../components';
+import { FunctionComponent } from 'react';
 
-export function TagsPage() {
+export const TagsPage: FunctionComponent = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 

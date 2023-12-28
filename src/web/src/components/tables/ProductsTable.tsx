@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 
 import { apolloClient } from '../../lib/apollo-client';
 import { fetchProductsQuery } from '../../requests';
+import { Product } from '../../models';
 
-export function ProductsTable() {
-  const [products, setProducts] = useState([]);
+export const ProductsTable: FunctionComponent = () => {
+  const [products, setProducts] = useState<Product[]>([]);
 
   const fetchProducts = async () => {
     const response = await apolloClient.query({ query: fetchProductsQuery});
@@ -33,13 +34,13 @@ export function ProductsTable() {
               <td width="20%"><code>{product.id}</code></td>
               <td>{product.title}</td>
               <td>{product.price}</td>
-              <td>{product.category.name}</td>
+              <td>{product.category!.name}</td>
               <td>
                 {
                   <Table hover size="sm">
                     <tbody>
                       {
-                        product.tags.map(tag => (
+                        product.tags!.map(tag => (
                           <tr key={`${product.id}-${tag.id}`}>
                             <td>{tag.name}</td>
                           </tr>
@@ -59,9 +60,9 @@ export function ProductsTable() {
                   </thead>
                   <tbody>
                     {
-                      product.reviews.map(review => (
-                        <tr key={`${product.id}-${review.id}-${review.author.id}`}>
-                          <td>{review.author.fullname}</td>
+                      product.reviews!.map(review => (
+                        <tr key={`${product.id}-${review.id}-${review.author!.id}`}>
+                          <td>{review.author!.fullname}</td>
                           <td>{review.commentary}</td>
                         </tr>
                       ))
