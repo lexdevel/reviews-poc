@@ -29,6 +29,24 @@ services:
       timeout: 5s
       retries: 5
 
+  identity:
+    build:
+      context: ./src/identity
+      dockerfile: ./Dockerfile
+    attach: false # Disable logging to stdout
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - 4001:4001
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--header", "content-type: application/json", "http://localhost:4001/.well-known/openid-configuration"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   categories:
     build:
       context: .
@@ -182,3 +200,16 @@ services:
       STOCK_URL: http://stock/graphql
       TAGS_URL: http://tags/graphql
       USERS_URL: http://users/graphql
+
+  web:
+    build:
+      context: ./src/web
+      dockerfile: ./Dockerfile
+    attach: false # Disable logging to stdout
+    ports:
+      - 3000:3000
+    depends_on:
+      gateway:
+        condition: service_started
+    volumes:
+      - ./src/web/src:/app/src # This is needed to enable hot reloading while developing web-frontend via docker

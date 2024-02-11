@@ -1,0 +1,9 @@
+{
+  "name": "reviews-poc-identity",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "oidc-provider": "^8.4.3"
+  }
+}

@@ -16,11 +16,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
     })
   });
 
-  const server = new ApolloServer({
-    gateway,
-    engine: false,
-    subscriptions: false,
-  });
+  const server = new ApolloServer({ gateway });
 
   const { url } = await startStandaloneServer(server, { listen: { port: process.env.PORT || 4000 } });
   console.log(`gateway is running on ${url}...`);
