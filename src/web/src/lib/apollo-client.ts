@@ -1,5 +1,10 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
+type TokenResponse = {
+  access_token: string;
+  token_type: string;
+}
+
 export const oidc = {
   authority: 'http://localhost:4001',
   grant_type: 'password',
@@ -14,7 +19,7 @@ const buildAuthorizationHeader = () => {
     return '';
   }
 
-  const { access_token, token_type } = JSON.parse(session);
+  const { access_token, token_type } = JSON.parse(session) as TokenResponse;
   return `${token_type} ${access_token}`;
 }
 

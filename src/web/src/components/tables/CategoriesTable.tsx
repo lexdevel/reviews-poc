@@ -13,7 +13,7 @@ export const CategoriesTable: FunctionComponent = () => {
 
   const removeCategory = async (category: Category) => {
     await apolloClient.mutate({ mutation: removeCategoryMutation, variables: { id: category.id } });
-    setCategories(categories.filter(c => c.id != category.id));
+    setCategories(categories.filter(c => c.id !== category.id));
   };
 
   return (
@@ -38,7 +38,6 @@ export const CategoriesTable: FunctionComponent = () => {
               {
                 auth.isAuthenticated && auth.user?.scopes.includes('admin')
                   ? <td width="20%">
-                      {/*<Button variant="warning" size="sm" className="me-1">Edit</Button>*/}
                       <Button variant="danger" size="sm" className="me-1" onClick={() => removeCategory(category)}>Delete</Button>
                     </td>
                   : null

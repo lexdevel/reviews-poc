@@ -44,7 +44,7 @@ export const UsersTable: FunctionComponent = () => {
                     {
                       user.reviews!.map(review => (
                         <tr key={`${user.id}-${review.id}`}>
-                          <td>{review.product!.title}</td>
+                          <td width="20%">{review.product!.title}</td>
                           <td>{review.commentary}</td>
                         </tr>
                       ))

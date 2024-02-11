@@ -12,7 +12,7 @@ type CategoriesContextType = {
 const CategoriesContext = createContext<CategoriesContextType>({ categories: [], setCategories: () => {} });
 
 export const CategoriesProvider = ({ children }: { children: React.JSX.Element[] }) => {
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const fetchCategories = async () => {
     const response = await apolloClient.query({ query: fetchCategoriesQuery });

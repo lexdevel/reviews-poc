@@ -35,7 +35,7 @@ export const TagsTable: FunctionComponent = () => {
         {
           tags.map(tag => (
             <tr key={tag.id}>
-              <td>{tag.id}</td>
+              <td width="20%">{tag.id}</td>
               <td>{tag.name}</td>
               {
                 auth.isAuthenticated

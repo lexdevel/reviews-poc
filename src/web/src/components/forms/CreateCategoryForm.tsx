@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FormEvent, FunctionComponent, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
 import { apolloClient } from '../../lib/apollo-client';
@@ -11,10 +11,10 @@ type CreateCategoryFormProps = {
 };
 
 export const CreateCategoryForm: FunctionComponent<CreateCategoryFormProps> = ({ show, onHide }: CreateCategoryFormProps) => {
-  const [ name, setName ] = useState('');
+  const [ categoryName, setCategoryName ] = useState('');
   const { categories, setCategories } = useCategoriesContext();
 
-  const handleCreate = async () => {
+  const createCategory = async () => {
     const response = await apolloClient.mutate({
       mutation: createCategoryMutation,
       variables: {
@@ -22,11 +22,16 @@ export const CreateCategoryForm: FunctionComponent<CreateCategoryFormProps> = ({
       },
     });
 
-    const category = { id: response.data.createCategory, name: name };
-    // addCategory(category);
+    const category = { id: response.data.createCategory, name: categoryName };
     setCategories([...categories, category]);
+  };
 
-    setName('');
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    await createCategory();
+
+    setCategoryName('');
     onHide();
   };
 
@@ -35,13 +40,15 @@ export const CreateCategoryForm: FunctionComponent<CreateCategoryFormProps> = ({
       <Modal.Header closeButton>
         <Modal.Title>Create new category</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <input type="text" className="form-control mb-3" placeholder="Category name" value={name} onChange={event => setName(event.target.value)} />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="primary" disabled={name.length == 0} onClick={handleCreate}>Create</Button>
-        <Button variant="secondary" onClick={onHide}>Cancel</Button>
-      </Modal.Footer>
+      <form onSubmit={handleSubmit}>
+        <Modal.Body>
+          <input type="text" className="form-control mb-3" placeholder="Category name" value={categoryName} onChange={event => setCategoryName(event.target.value)} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" disabled={categoryName.length == 0} onClick={handleSubmit}>Create</Button>
+          <Button variant="secondary" onClick={onHide}>Cancel</Button>
+        </Modal.Footer>
+      </form>
     </Modal>
   )
 }
