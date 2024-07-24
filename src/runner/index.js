@@ -15,7 +15,8 @@ async function main() {
   await mongoClient.connect();
   await redisClient.connect();
 
-  const typeDefs = gql`${readFileSync('schema.graphql', { encoding: 'utf8' })}`;
+  const schema = readFileSync('schema.graphql', { encoding: 'utf8' });
+  const typeDefs = gql`${schema}`;
   const resolvers = await buildResolvers(mongoClient, redisClient);
   const server = new ApolloServer({ schema: buildSubgraphSchema({ typeDefs, resolvers }) });
 
@@ -23,4 +24,4 @@ async function main() {
   console.log(`${process.env.SERVICE_NAME} service is running on ${url}...`);
 }
 
-main();
+main().catch(console.error);

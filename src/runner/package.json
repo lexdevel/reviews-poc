@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@apollo/server": "^4.9.5",
-    "@apollo/subgraph": "^2.6.2",
+    "@apollo/server": "^4.10.5",
+    "@apollo/subgraph": "^2.8.3",
     "graphql-tag": "^2.12.6",
-    "mongodb": "^6.3.0",
-    "redis": "^4.6.12"
+    "mongodb": "^6.8.0",
+    "redis": "^4.6.15"
   }
 }

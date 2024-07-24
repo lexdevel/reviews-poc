@@ -211,5 +211,5 @@ services:
     depends_on:
       gateway:
         condition: service_started
-    volumes:
-      - ./src/web/src:/app/src # This is needed to enable hot reloading while developing web-frontend via docker
+    # volumes:
+    #   - ./src/web/src:/app/src # This is needed to enable hot reloading while developing web-frontend via docker

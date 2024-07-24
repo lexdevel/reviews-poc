@@ -18,7 +18,7 @@ export const CreateCategoryForm: FunctionComponent<CreateCategoryFormProps> = ({
     const response = await apolloClient.mutate({
       mutation: createCategoryMutation,
       variables: {
-        name,
+        name: categoryName,
       },
     });
 
